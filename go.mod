@@ -1,3 +1,3 @@
 module github.com/supby/zigbee2webthings
 
-go 1.16
+go 1.19
