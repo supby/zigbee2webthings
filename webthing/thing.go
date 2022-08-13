@@ -1,6 +1,7 @@
 package webthing
 
 type Thing struct {
+	Id          string     `json:"id,omitempty"`
 	AtContext   string     `json:"@context,omitempty"`
 	AtType      []string   `json:"@type,omitempty"`
 	Title       string     `json:"title,omitempty"`

@@ -10,6 +10,6 @@ type Property struct {
 	Unit        string   `json:"unit,omitempty"`
 	MultipleOf  int      `json:"multipleOf,omitempty"`
 	Enum        []string `json:"enum,omitempty"`
-	ReadOnly    []string `json:"readOnly,omitempty"`
+	ReadOnly    bool     `json:"readOnly,omitempty"`
 	Links       []Link   `json:"links,omitempty"`
 }

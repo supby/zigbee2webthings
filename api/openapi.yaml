@@ -1,0 +1,297 @@
+openapi: 3.0.0
+info:
+  title: Web Thing REST API
+  description: The Web Thing API provides a web services based programming interface with a RESTful design for applications to access the properties of devices, request the execution of actions and access a list of events representing a change in state.
+  version: 0.1.0
+
+components:
+  schemas:
+    PropertyDescription:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        '@type':
+          type: string
+        minimum:
+          type: integer
+        maximum:
+          type: integer
+        unit:
+          type: string
+        multipleOf:
+          type: integer
+        enum:
+          type: array
+          items:
+            type: string
+        readOnly:
+          type: boolean
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkDescription'
+
+    ActionDescription:
+      type: object
+      properties:
+        title:
+          type: integer
+        description:
+          type: string
+        '@type':
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkDescription'
+        input:
+          type: object
+          properties:
+            '@type':
+              type: string
+            type:
+              type: string
+            minimum:
+              type: integer
+            maximum:
+              type: integer
+            unit:
+              type: string
+            multipleOf:
+              type: integer
+
+    EventDescription:
+      type: object
+      properties:
+        title:
+          type: integer
+        description:
+          type: string
+        type:
+          type: string
+        '@type':
+          type: string
+        minimum:
+          type: integer
+        maximum:
+          type: integer
+        unit:
+          type: string
+        multipleOf:
+          type: integer
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkDescription'
+
+    LinkDescription:
+      type: object
+      properties:
+        href:
+          type: string
+        rel:
+          type: string
+        mediaType:
+          type: string
+
+    ThingDescription:
+      type: object
+      properties:
+        id:
+          type: string
+        '@type':
+          type: string
+        '@context':
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDescription'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionDescription'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDescription'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkDescription'
+      
+
+paths:
+  /things:
+    get:
+      summary: Returns a list of thngs on this server.
+      description: Returns a list of thngs on this server.
+      responses:
+        '200':
+          description: A JSON array of thing objects
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/ThingDescription'
+
+  /things/{deviceId}:
+    get:
+      summary: Returns a description for device.
+      description: >
+        Returns a description for device identified by `id`.
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: Id of device
+      responses:
+        '200':
+          description: A thing object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingDescription'
+
+  /things/{deviceId}/properties:
+    get:
+      summary: Returns a list of properties for device.
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: Id of device
+      responses:
+        '200':
+          description: A properties object
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+
+  /things/{deviceId}/properties/{propertyName}:
+    get:
+      summary: Returns a property of device.
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: Id of device
+        - in: path
+          name: propertyName
+          schema:
+            type: string
+          required: true
+          description: Name of property
+      responses:
+        '200':
+          description: A property value
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+
+  /things/{deviceId}/actions:
+    get:
+      summary: Actions Get or Create
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: Id of device
+      responses:
+        '200':
+          description: >
+            A queue of actions to be executed on a device.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties:
+                    type: object
+                    properties:
+                      input:
+                        type: object
+                        additionalProperties:
+                          type: string
+                      href:
+                        type: string
+                      timeRequested:
+                        type: string
+                      status:
+                        type: string
+
+    post:
+      parameters:
+        - in: path
+          name: deviceId
+          schema:
+            type: string
+          required: true
+          description: Id of device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: object
+                description: Name of action to execute
+                properties:
+                  input:
+                    type: object
+                    additionalProperties:
+                      type: string
+      responses:
+        '201':
+          description: >
+            Created action to be executed on a device.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    input:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    href:
+                      type: string
+                    timeRequested:
+                      type: string
+                    status:
+                      type: string
+                  
+
+
+                      
+
+
+                  
+                  
