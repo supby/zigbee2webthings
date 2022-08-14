@@ -135,7 +135,56 @@ definitions:
         type: array
         items:          
           $ref: '#/definitions/LinkDescription'
-      
+
+  ActionPostBody:
+    type: object
+    additionalProperties:
+      type: object
+      description: Name of action to execute
+      properties:
+        input:
+          type: object
+          additionalProperties:
+            type: string
+
+  ActionPostResponse:
+    type: object
+    additionalProperties:
+      type: object
+      properties:
+        input:
+          type: object
+          additionalProperties:
+            type: string
+        href:
+          type: string
+        timeRequested:
+          type: string
+        status:
+          type: string
+
+  ActionsGetResponse:
+    type: array
+    items:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          input:
+            type: object
+            additionalProperties:
+              type: string
+          href:
+            type: string
+          timeRequested:
+            type: string
+          status:
+            type: string
+
+  PropertyGetResponse:
+    type: object
+    additionalProperties:
+      type: string
 
 paths:
   /things:
@@ -180,9 +229,7 @@ paths:
         '200':
           description: A properties object
           schema:
-            type: object
-            additionalProperties:
-              type: string
+            $ref: '#/definitions/PropertyGetResponse'
 
   /things/{deviceId}/properties/{propertyName}:
     get:
@@ -202,9 +249,7 @@ paths:
         '200':
           description: A property value
           schema:
-            type: object
-            additionalProperties:
-              type: string
+            $ref: '#/definitions/PropertyGetResponse'
 
   /things/{deviceId}/actions:
     get:
@@ -220,39 +265,16 @@ paths:
           description: >
             A queue of actions to be executed on a device.
           schema:
-            type: array
-            items:
-              type: object
-              additionalProperties:
-                type: object
-                properties:
-                  input:
-                    type: object
-                    additionalProperties:
-                      type: string
-                  href:
-                    type: string
-                  timeRequested:
-                    type: string
-                  status:
-                    type: string
+            $ref: '#/definitions/ActionsGetResponse'
 
     post:
       parameters:
         - in: body
-          name: user
-          description: The user to create.
+          name: action
+          description: Action to execute.
           required: true
           schema:
-              type: object
-              additionalProperties:
-                type: object
-                description: Name of action to execute
-                properties:
-                  input:
-                    type: object
-                    additionalProperties:
-                      type: string
+            $ref: '#/definitions/ActionPostBody'
         - in: path
           name: deviceId
           type: string
@@ -264,20 +286,8 @@ paths:
           description: >
             Created action to be executed on a device.
           schema:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                input:
-                  type: object
-                  additionalProperties:
-                    type: string
-                href:
-                  type: string
-                timeRequested:
-                  type: string
-                status:
-                  type: string
+            $ref: '#/definitions/ActionPostResponse'
+            
                   
 
 
