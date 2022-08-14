@@ -1,5 +1,5 @@
 default:
-	go build -o ./bin/zigbee2webthings cmd/zigbee2webthings/main.go
+	go build -o ./bin/zigbee2webthings ./cmd/zigbee2webthings/main.go
 
 
 rpi_build:
