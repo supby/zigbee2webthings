@@ -147,7 +147,7 @@ definitions:
           additionalProperties:
             type: string
 
-  ActionPostResponse:
+  ActionObject:
     type: object
     additionalProperties:
       type: object
@@ -156,6 +156,8 @@ definitions:
           type: object
           additionalProperties:
             type: string
+        id:
+          type: string
         href:
           type: string
         timeRequested:
@@ -166,22 +168,14 @@ definitions:
   ActionsGetResponse:
     type: array
     items:
-      type: object
-      additionalProperties:
-        type: object
-        properties:
-          input:
-            type: object
-            additionalProperties:
-              type: string
-          href:
-            type: string
-          timeRequested:
-            type: string
-          status:
-            type: string
+      $ref: '#/definitions/ActionObject'
 
   PropertyGetResponse:
+    type: object
+    additionalProperties:
+      type: string
+
+  PropertyPutBody:
     type: object
     additionalProperties:
       type: string
@@ -232,34 +226,51 @@ paths:
             $ref: '#/definitions/PropertyGetResponse'
 
   /things/{deviceId}/properties/{propertyName}:
+    parameters:
+      - in: path
+        name: deviceId
+        type: string
+        required: true
+        description: Id of device
+      - in: path
+        name: propertyName
+        type: string
+        required: true
+        description: Name of property
     get:
-      summary: Returns a property of device.
-      parameters:
-        - in: path
-          name: deviceId
-          type: string
-          required: true
-          description: Id of device
-        - in: path
-          name: propertyName
-          type: string
-          required: true
-          description: Name of property
+      summary: Returns a property of device.      
       responses:
         '200':
           description: A property value
           schema:
             $ref: '#/definitions/PropertyGetResponse'
 
-  /things/{deviceId}/actions:
-    get:
-      summary: Actions Get or Create
+    put:
+      summary: Set a property of device.
       parameters:
-        - in: path
-          name: deviceId
-          type: string
+        - in: body
+          name: property
+          description: Set property.
           required: true
-          description: Id of device
+          schema:
+            $ref: '#/definitions/PropertyPutBody'
+      responses:
+        '200':
+          description: A property value
+          schema:
+            $ref: '#/definitions/PropertyGetResponse'
+
+
+  /things/{deviceId}/actions:
+    parameters:
+      - in: path
+        name: deviceId
+        type: string
+        required: true
+        description: Id of device
+
+    get:
+      summary: Actions Get or Create      
       responses:
         '200':
           description: >
@@ -275,18 +286,62 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/ActionPostBody'
-        - in: path
-          name: deviceId
-          type: string
-          required: true
-          description: Id of device
             
       responses:
         '201':
           description: >
             Created action to be executed on a device.
           schema:
-            $ref: '#/definitions/ActionPostResponse'
+            $ref: '#/definitions/ActionObject'
+
+  /things/{deviceId}/actions/{actionName}/{actionId}:
+    parameters:
+      - in: path
+        name: deviceId
+        type: string
+        required: true
+        description: Id of device
+      - in: path
+        name: actionName
+        type: string
+        required: true
+        description: Name of action
+      - in: path
+        name: actionId
+        type: string
+        required: true
+        description: Id of created action
+
+    get:
+      summary: Single Action Status Get
+      responses:
+        '200':
+          description: >
+            A queue of actions to be executed on a device.
+          schema:
+            $ref: '#/definitions/ActionObject'
+
+    put:
+      summary: Update Single Action
+      parameters:
+        - in: body
+          name: action
+          description: Action to execute.
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPostBody'
+      responses:
+        '200':
+          description: >
+            A queue of actions to be executed on a device.
+          schema:
+            $ref: '#/definitions/ActionObject'
+
+    delete:
+      summary: Cancel created action
+      responses:
+        '204':
+          description: No Content
             
                   
 

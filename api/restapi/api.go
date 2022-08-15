@@ -28,6 +28,9 @@ import (
 // Routes defines all the routes of the Server service.
 type Routes struct {
 	*gin.Engine
+	DeleteThingsDeviceIDActionsActionNameActionID struct {
+		*gin.RouterGroup
+	}
 	GetThings struct {
 		*gin.RouterGroup
 	}
@@ -37,6 +40,9 @@ type Routes struct {
 	GetThingsDeviceIDActions struct {
 		*gin.RouterGroup
 	}
+	GetThingsDeviceIDActionsActionNameActionID struct {
+		*gin.RouterGroup
+	}
 	GetThingsDeviceIDProperties struct {
 		*gin.RouterGroup
 	}
@@ -44,6 +50,12 @@ type Routes struct {
 		*gin.RouterGroup
 	}
 	PostThingsDeviceIDActions struct {
+		*gin.RouterGroup
+	}
+	PutThingsDeviceIDActionsActionNameActionID struct {
+		*gin.RouterGroup
+	}
+	PutThingsDeviceIDPropertiesPropertyName struct {
 		*gin.RouterGroup
 	}
 }
@@ -94,12 +106,16 @@ func healthHandler(healthFunc func() bool) gin.HandlerFunc {
 // business logic for the Server service.
 type Service interface {
 	Healthy() bool
+	DeleteThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.DeleteThingsDeviceIDActionsActionNameActionIDParams) *api.Response
 	GetThings(ctx *gin.Context) *api.Response
 	GetThingsDeviceID(ctx *gin.Context, params *operations.GetThingsDeviceIDParams) *api.Response
 	GetThingsDeviceIDActions(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsParams) *api.Response
+	GetThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsActionNameActionIDParams) *api.Response
 	GetThingsDeviceIDProperties(ctx *gin.Context, params *operations.GetThingsDeviceIDPropertiesParams) *api.Response
 	GetThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.GetThingsDeviceIDPropertiesPropertyNameParams) *api.Response
 	PostThingsDeviceIDActions(ctx *gin.Context, params *operations.PostThingsDeviceIDActionsParams) *api.Response
+	PutThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.PutThingsDeviceIDActionsActionNameActionIDParams) *api.Response
+	PutThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.PutThingsDeviceIDPropertiesPropertyNameParams) *api.Response
 }
 
 func ginizePath(path string) string {
@@ -111,6 +127,12 @@ func initializeRoutes(enableAuth bool, tokenURL string, tracer opentracing.Trace
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 	routes := &Routes{Engine: engine}
+
+	routes.DeleteThingsDeviceIDActionsActionNameActionID.RouterGroup = routes.Group("/v1")
+	routes.DeleteThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	if tracer != nil {
+		routes.DeleteThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "delete_things_device_id_actions_action_name_action_id"))
+	}
 
 	routes.GetThings.RouterGroup = routes.Group("/v1")
 	routes.GetThings.RouterGroup.Use(middleware.LogrusLogger())
@@ -128,6 +150,12 @@ func initializeRoutes(enableAuth bool, tokenURL string, tracer opentracing.Trace
 	routes.GetThingsDeviceIDActions.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
 		routes.GetThingsDeviceIDActions.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id_actions"))
+	}
+
+	routes.GetThingsDeviceIDActionsActionNameActionID.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	if tracer != nil {
+		routes.GetThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id_actions_action_name_action_id"))
 	}
 
 	routes.GetThingsDeviceIDProperties.RouterGroup = routes.Group("/v1")
@@ -148,6 +176,20 @@ func initializeRoutes(enableAuth bool, tokenURL string, tracer opentracing.Trace
 		routes.PostThingsDeviceIDActions.RouterGroup.Use(tracing.InitSpan(tracer, "post_things_device_id_actions"))
 	}
 	routes.PostThingsDeviceIDActions.RouterGroup.Use(middleware.ContentTypes("application/json"))
+
+	routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup = routes.Group("/v1")
+	routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	if tracer != nil {
+		routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "put_things_device_id_actions_action_name_action_id"))
+	}
+	routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.ContentTypes("application/json"))
+
+	routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup = routes.Group("/v1")
+	routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(middleware.LogrusLogger())
+	if tracer != nil {
+		routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(tracing.InitSpan(tracer, "put_things_device_id_properties_property_name"))
+	}
+	routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(middleware.ContentTypes("application/json"))
 
 	return routes
 }
@@ -229,12 +271,16 @@ func (s *Server) configureRoutes() {
 
 	// setup all service routes after the authenticate middleware has been
 	// initialized.
+	s.Routes.DeleteThingsDeviceIDActionsActionNameActionID.DELETE(ginizePath("/things/{deviceId}/actions/{actionName}/{actionId}"), operations.DeleteThingsDeviceIDActionsActionNameActionIDEndpoint(s.service.DeleteThingsDeviceIDActionsActionNameActionID))
 	s.Routes.GetThings.GET(ginizePath("/things"), operations.GetThingsEndpoint(s.service.GetThings))
 	s.Routes.GetThingsDeviceID.GET(ginizePath("/things/{deviceId}"), operations.GetThingsDeviceIDEndpoint(s.service.GetThingsDeviceID))
 	s.Routes.GetThingsDeviceIDActions.GET(ginizePath("/things/{deviceId}/actions"), operations.GetThingsDeviceIDActionsEndpoint(s.service.GetThingsDeviceIDActions))
+	s.Routes.GetThingsDeviceIDActionsActionNameActionID.GET(ginizePath("/things/{deviceId}/actions/{actionName}/{actionId}"), operations.GetThingsDeviceIDActionsActionNameActionIDEndpoint(s.service.GetThingsDeviceIDActionsActionNameActionID))
 	s.Routes.GetThingsDeviceIDProperties.GET(ginizePath("/things/{deviceId}/properties"), operations.GetThingsDeviceIDPropertiesEndpoint(s.service.GetThingsDeviceIDProperties))
 	s.Routes.GetThingsDeviceIDPropertiesPropertyName.GET(ginizePath("/things/{deviceId}/properties/{propertyName}"), operations.GetThingsDeviceIDPropertiesPropertyNameEndpoint(s.service.GetThingsDeviceIDPropertiesPropertyName))
 	s.Routes.PostThingsDeviceIDActions.POST(ginizePath("/things/{deviceId}/actions"), operations.PostThingsDeviceIDActionsEndpoint(s.service.PostThingsDeviceIDActions))
+	s.Routes.PutThingsDeviceIDActionsActionNameActionID.PUT(ginizePath("/things/{deviceId}/actions/{actionName}/{actionId}"), operations.PutThingsDeviceIDActionsActionNameActionIDEndpoint(s.service.PutThingsDeviceIDActionsActionNameActionID))
+	s.Routes.PutThingsDeviceIDPropertiesPropertyName.PUT(ginizePath("/things/{deviceId}/properties/{propertyName}"), operations.PutThingsDeviceIDPropertiesPropertyNameEndpoint(s.service.PutThingsDeviceIDPropertiesPropertyName))
 }
 
 // Run runs the Server. It will listen on either HTTP or HTTPS depending on the

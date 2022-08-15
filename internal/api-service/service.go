@@ -35,3 +35,19 @@ func (s *WebThingsApiService) GetThingsDeviceIDPropertiesPropertyName(ctx *gin.C
 func (s *WebThingsApiService) PostThingsDeviceIDActions(ctx *gin.Context, params *operations.PostThingsDeviceIDActionsParams) *api.Response {
 	panic("not implemented")
 }
+
+func (s *WebThingsApiService) PutThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.PutThingsDeviceIDActionsActionNameActionIDParams) *api.Response {
+	panic("not implemented")
+}
+
+func (s *WebThingsApiService) DeleteThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.DeleteThingsDeviceIDActionsActionNameActionIDParams) *api.Response {
+	panic("not implemented")
+}
+
+func (s *WebThingsApiService) GetThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsActionNameActionIDParams) *api.Response {
+	panic("not implemented")
+}
+
+func (s *WebThingsApiService) PutThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.PutThingsDeviceIDPropertiesPropertyNameParams) *api.Response {
+	panic("not implemented")
+}

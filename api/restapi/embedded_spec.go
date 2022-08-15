@@ -74,15 +74,6 @@ func init() {
     "/things/{deviceId}/actions": {
       "get": {
         "summary": "Actions Get or Create",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Id of device",
-            "name": "deviceId",
-            "in": "path",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "description": "A queue of actions to be executed on a device.\n",
@@ -102,24 +93,92 @@ func init() {
             "schema": {
               "$ref": "#/definitions/ActionPostBody"
             }
-          },
-          {
-            "type": "string",
-            "description": "Id of device",
-            "name": "deviceId",
-            "in": "path",
-            "required": true
           }
         ],
         "responses": {
           "201": {
             "description": "Created action to be executed on a device.\n",
             "schema": {
-              "$ref": "#/definitions/ActionPostResponse"
+              "$ref": "#/definitions/ActionObject"
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/things/{deviceId}/actions/{actionName}/{actionId}": {
+      "get": {
+        "summary": "Single Action Status Get",
+        "responses": {
+          "200": {
+            "description": "A queue of actions to be executed on a device.\n",
+            "schema": {
+              "$ref": "#/definitions/ActionObject"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Single Action",
+        "parameters": [
+          {
+            "description": "Action to execute.",
+            "name": "action",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ActionPostBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A queue of actions to be executed on a device.\n",
+            "schema": {
+              "$ref": "#/definitions/ActionObject"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel created action",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Name of action",
+          "name": "actionName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Id of created action",
+          "name": "actionId",
+          "in": "path",
+          "required": true
+        }
+      ]
     },
     "/things/{deviceId}/properties": {
       "get": {
@@ -146,20 +205,26 @@ func init() {
     "/things/{deviceId}/properties/{propertyName}": {
       "get": {
         "summary": "Returns a property of device.",
+        "responses": {
+          "200": {
+            "description": "A property value",
+            "schema": {
+              "$ref": "#/definitions/PropertyGetResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Set a property of device.",
         "parameters": [
           {
-            "type": "string",
-            "description": "Id of device",
-            "name": "deviceId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Name of property",
-            "name": "propertyName",
-            "in": "path",
-            "required": true
+            "description": "Set property.",
+            "name": "property",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PropertyPutBody"
+            }
           }
         ],
         "responses": {
@@ -170,7 +235,23 @@ func init() {
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Name of property",
+          "name": "propertyName",
+          "in": "path",
+          "required": true
+        }
+      ]
     }
   },
   "definitions": {
@@ -217,27 +298,15 @@ func init() {
         }
       }
     },
-    "ActionPostBody": {
-      "type": "object",
-      "additionalProperties": {
-        "description": "Name of action to execute",
-        "type": "object",
-        "properties": {
-          "input": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "ActionPostResponse": {
+    "ActionObject": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
         "properties": {
           "href": {
+            "type": "string"
+          },
+          "id": {
             "type": "string"
           },
           "input": {
@@ -255,30 +324,25 @@ func init() {
         }
       }
     },
-    "ActionsGetResponse": {
-      "type": "array",
-      "items": {
+    "ActionPostBody": {
+      "type": "object",
+      "additionalProperties": {
+        "description": "Name of action to execute",
         "type": "object",
-        "additionalProperties": {
-          "type": "object",
-          "properties": {
-            "href": {
-              "type": "string"
-            },
-            "input": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            },
-            "status": {
-              "type": "string"
-            },
-            "timeRequested": {
+        "properties": {
+          "input": {
+            "type": "object",
+            "additionalProperties": {
               "type": "string"
             }
           }
         }
+      }
+    },
+    "ActionsGetResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ActionObject"
       }
     },
     "EventDescription": {
@@ -375,6 +439,12 @@ func init() {
       }
     },
     "PropertyGetResponse": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "PropertyPutBody": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
@@ -483,15 +553,6 @@ func init() {
     "/things/{deviceId}/actions": {
       "get": {
         "summary": "Actions Get or Create",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Id of device",
-            "name": "deviceId",
-            "in": "path",
-            "required": true
-          }
-        ],
         "responses": {
           "200": {
             "description": "A queue of actions to be executed on a device.\n",
@@ -511,24 +572,92 @@ func init() {
             "schema": {
               "$ref": "#/definitions/ActionPostBody"
             }
-          },
-          {
-            "type": "string",
-            "description": "Id of device",
-            "name": "deviceId",
-            "in": "path",
-            "required": true
           }
         ],
         "responses": {
           "201": {
             "description": "Created action to be executed on a device.\n",
             "schema": {
-              "$ref": "#/definitions/ActionPostResponse"
+              "$ref": "#/definitions/ActionObject"
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/things/{deviceId}/actions/{actionName}/{actionId}": {
+      "get": {
+        "summary": "Single Action Status Get",
+        "responses": {
+          "200": {
+            "description": "A queue of actions to be executed on a device.\n",
+            "schema": {
+              "$ref": "#/definitions/ActionObject"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Single Action",
+        "parameters": [
+          {
+            "description": "Action to execute.",
+            "name": "action",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ActionPostBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A queue of actions to be executed on a device.\n",
+            "schema": {
+              "$ref": "#/definitions/ActionObject"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel created action",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Name of action",
+          "name": "actionName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Id of created action",
+          "name": "actionId",
+          "in": "path",
+          "required": true
+        }
+      ]
     },
     "/things/{deviceId}/properties": {
       "get": {
@@ -555,20 +684,26 @@ func init() {
     "/things/{deviceId}/properties/{propertyName}": {
       "get": {
         "summary": "Returns a property of device.",
+        "responses": {
+          "200": {
+            "description": "A property value",
+            "schema": {
+              "$ref": "#/definitions/PropertyGetResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Set a property of device.",
         "parameters": [
           {
-            "type": "string",
-            "description": "Id of device",
-            "name": "deviceId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Name of property",
-            "name": "propertyName",
-            "in": "path",
-            "required": true
+            "description": "Set property.",
+            "name": "property",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PropertyPutBody"
+            }
           }
         ],
         "responses": {
@@ -579,7 +714,23 @@ func init() {
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Name of property",
+          "name": "propertyName",
+          "in": "path",
+          "required": true
+        }
+      ]
     }
   },
   "definitions": {
@@ -649,6 +800,35 @@ func init() {
         }
       }
     },
+    "ActionObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/ActionObjectAnon"
+      }
+    },
+    "ActionObjectAnon": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "timeRequested": {
+          "type": "string"
+        }
+      }
+    },
     "ActionPostBody": {
       "type": "object",
       "additionalProperties": {
@@ -667,59 +847,10 @@ func init() {
         }
       }
     },
-    "ActionPostResponse": {
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/ActionPostResponseAnon"
-      }
-    },
-    "ActionPostResponseAnon": {
-      "type": "object",
-      "properties": {
-        "href": {
-          "type": "string"
-        },
-        "input": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "status": {
-          "type": "string"
-        },
-        "timeRequested": {
-          "type": "string"
-        }
-      }
-    },
     "ActionsGetResponse": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": {
-          "$ref": "#/definitions/ActionsGetResponseAnon"
-        }
-      }
-    },
-    "ActionsGetResponseAnon": {
-      "type": "object",
-      "properties": {
-        "href": {
-          "type": "string"
-        },
-        "input": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "status": {
-          "type": "string"
-        },
-        "timeRequested": {
-          "type": "string"
-        }
+        "$ref": "#/definitions/ActionObject"
       }
     },
     "EventDescription": {
@@ -816,6 +947,12 @@ func init() {
       }
     },
     "PropertyGetResponse": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "PropertyPutBody": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
