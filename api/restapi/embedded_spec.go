@@ -34,7 +34,7 @@ func init() {
     "/things": {
       "get": {
         "description": "Returns a list of thngs on this server.",
-        "summary": "Returns a list of thngs on this server.",
+        "summary": "Collection of web things exposed by server.",
         "responses": {
           "200": {
             "description": "A JSON array of thing objects",
@@ -48,7 +48,7 @@ func init() {
         }
       }
     },
-    "/things/{deviceId}": {
+    "/things/{deviceName}": {
       "get": {
         "description": "Returns a description for device identified by ` + "`" + `id` + "`" + `.\n",
         "summary": "Returns a description for device.",
@@ -56,7 +56,7 @@ func init() {
           {
             "type": "string",
             "description": "Id of device",
-            "name": "deviceId",
+            "name": "deviceName",
             "in": "path",
             "required": true
           }
@@ -71,7 +71,7 @@ func init() {
         }
       }
     },
-    "/things/{deviceId}/actions": {
+    "/things/{deviceName}/actions": {
       "get": {
         "summary": "Actions Get or Create",
         "responses": {
@@ -108,13 +108,13 @@ func init() {
         {
           "type": "string",
           "description": "Id of device",
-          "name": "deviceId",
+          "name": "deviceName",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/things/{deviceId}/actions/{actionName}/{actionId}": {
+    "/things/{deviceName}/actions/{actionName}/{actionId}": {
       "get": {
         "summary": "Single Action Status Get",
         "responses": {
@@ -160,7 +160,7 @@ func init() {
         {
           "type": "string",
           "description": "Id of device",
-          "name": "deviceId",
+          "name": "deviceName",
           "in": "path",
           "required": true
         },
@@ -180,14 +180,65 @@ func init() {
         }
       ]
     },
-    "/things/{deviceId}/properties": {
+    "/things/{deviceName}/events": {
+      "get": {
+        "summary": "Get list of events",
+        "responses": {
+          "200": {
+            "description": "List of EventObject",
+            "schema": {
+              "$ref": "#/definitions/EventsResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/things/{deviceName}/events/{eventType}": {
+      "get": {
+        "summary": "Get list of events for particular event type",
+        "responses": {
+          "200": {
+            "description": "List of EventObject",
+            "schema": {
+              "$ref": "#/definitions/EventsResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Type of event",
+          "name": "eventType",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/things/{deviceName}/properties": {
       "get": {
         "summary": "Returns a list of properties for device.",
         "parameters": [
           {
             "type": "string",
             "description": "Id of device",
-            "name": "deviceId",
+            "name": "deviceName",
             "in": "path",
             "required": true
           }
@@ -202,7 +253,7 @@ func init() {
         }
       }
     },
-    "/things/{deviceId}/properties/{propertyName}": {
+    "/things/{deviceName}/properties/{propertyName}": {
       "get": {
         "summary": "Returns a property of device.",
         "responses": {
@@ -240,7 +291,7 @@ func init() {
         {
           "type": "string",
           "description": "Id of device",
-          "name": "deviceId",
+          "name": "deviceName",
           "in": "path",
           "required": true
         },
@@ -312,7 +363,10 @@ func init() {
           "input": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": [
+                "string",
+                "integer"
+              ]
             }
           },
           "status": {
@@ -333,7 +387,10 @@ func init() {
           "input": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": [
+                "string",
+                "integer"
+              ]
             }
           }
         }
@@ -378,6 +435,24 @@ func init() {
         "unit": {
           "type": "string"
         }
+      }
+    },
+    "EventObject": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      }
+    },
+    "EventsResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EventObject"
       }
     },
     "LinkDescription": {
@@ -441,13 +516,19 @@ func init() {
     "PropertyGetResponse": {
       "type": "object",
       "additionalProperties": {
-        "type": "string"
+        "type": [
+          "string",
+          "number"
+        ]
       }
     },
     "PropertyPutBody": {
       "type": "object",
       "additionalProperties": {
-        "type": "string"
+        "type": [
+          "string",
+          "number"
+        ]
       }
     },
     "ThingDescription": {
@@ -513,7 +594,7 @@ func init() {
     "/things": {
       "get": {
         "description": "Returns a list of thngs on this server.",
-        "summary": "Returns a list of thngs on this server.",
+        "summary": "Collection of web things exposed by server.",
         "responses": {
           "200": {
             "description": "A JSON array of thing objects",
@@ -527,7 +608,7 @@ func init() {
         }
       }
     },
-    "/things/{deviceId}": {
+    "/things/{deviceName}": {
       "get": {
         "description": "Returns a description for device identified by ` + "`" + `id` + "`" + `.\n",
         "summary": "Returns a description for device.",
@@ -535,7 +616,7 @@ func init() {
           {
             "type": "string",
             "description": "Id of device",
-            "name": "deviceId",
+            "name": "deviceName",
             "in": "path",
             "required": true
           }
@@ -550,7 +631,7 @@ func init() {
         }
       }
     },
-    "/things/{deviceId}/actions": {
+    "/things/{deviceName}/actions": {
       "get": {
         "summary": "Actions Get or Create",
         "responses": {
@@ -587,13 +668,13 @@ func init() {
         {
           "type": "string",
           "description": "Id of device",
-          "name": "deviceId",
+          "name": "deviceName",
           "in": "path",
           "required": true
         }
       ]
     },
-    "/things/{deviceId}/actions/{actionName}/{actionId}": {
+    "/things/{deviceName}/actions/{actionName}/{actionId}": {
       "get": {
         "summary": "Single Action Status Get",
         "responses": {
@@ -639,7 +720,7 @@ func init() {
         {
           "type": "string",
           "description": "Id of device",
-          "name": "deviceId",
+          "name": "deviceName",
           "in": "path",
           "required": true
         },
@@ -659,14 +740,65 @@ func init() {
         }
       ]
     },
-    "/things/{deviceId}/properties": {
+    "/things/{deviceName}/events": {
+      "get": {
+        "summary": "Get list of events",
+        "responses": {
+          "200": {
+            "description": "List of EventObject",
+            "schema": {
+              "$ref": "#/definitions/EventsResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceName",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/things/{deviceName}/events/{eventType}": {
+      "get": {
+        "summary": "Get list of events for particular event type",
+        "responses": {
+          "200": {
+            "description": "List of EventObject",
+            "schema": {
+              "$ref": "#/definitions/EventsResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "Id of device",
+          "name": "deviceName",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Type of event",
+          "name": "eventType",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/things/{deviceName}/properties": {
       "get": {
         "summary": "Returns a list of properties for device.",
         "parameters": [
           {
             "type": "string",
             "description": "Id of device",
-            "name": "deviceId",
+            "name": "deviceName",
             "in": "path",
             "required": true
           }
@@ -681,7 +813,7 @@ func init() {
         }
       }
     },
-    "/things/{deviceId}/properties/{propertyName}": {
+    "/things/{deviceName}/properties/{propertyName}": {
       "get": {
         "summary": "Returns a property of device.",
         "responses": {
@@ -719,7 +851,7 @@ func init() {
         {
           "type": "string",
           "description": "Id of device",
-          "name": "deviceId",
+          "name": "deviceName",
           "in": "path",
           "required": true
         },
@@ -818,7 +950,10 @@ func init() {
         "input": {
           "type": "object",
           "additionalProperties": {
-            "type": "string"
+            "type": [
+              "string",
+              "integer"
+            ]
           }
         },
         "status": {
@@ -842,7 +977,10 @@ func init() {
         "input": {
           "type": "object",
           "additionalProperties": {
-            "type": "string"
+            "type": [
+              "string",
+              "integer"
+            ]
           }
         }
       }
@@ -886,6 +1024,24 @@ func init() {
         "unit": {
           "type": "string"
         }
+      }
+    },
+    "EventObject": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      }
+    },
+    "EventsResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EventObject"
       }
     },
     "LinkDescription": {
@@ -949,13 +1105,19 @@ func init() {
     "PropertyGetResponse": {
       "type": "object",
       "additionalProperties": {
-        "type": "string"
+        "type": [
+          "string",
+          "number"
+        ]
       }
     },
     "PropertyPutBody": {
       "type": "object",
       "additionalProperties": {
-        "type": "string"
+        "type": [
+          "string",
+          "number"
+        ]
       }
     },
     "ThingDescription": {

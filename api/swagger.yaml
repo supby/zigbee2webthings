@@ -145,7 +145,9 @@ definitions:
         input:
           type: object
           additionalProperties:
-            type: string
+            type: 
+              - string
+              - integer
 
   ActionObject:
     type: object
@@ -155,7 +157,9 @@ definitions:
         input:
           type: object
           additionalProperties:
-            type: string
+            type: 
+            - string
+            - integer
         id:
           type: string
         href:
@@ -173,17 +177,38 @@ definitions:
   PropertyGetResponse:
     type: object
     additionalProperties:
-      type: string
+      type: 
+        - string
+        - number
 
   PropertyPutBody:
     type: object
     additionalProperties:
-      type: string
+      type: 
+        - string
+        - number
+
+  EventObject:
+    type: object
+    additionalProperties:
+      type: object
+      additionalProperties:
+        type: 
+          - string
+          - number
+
+  EventsResponse:
+    type: array
+    items:
+      $ref: '#/definitions/EventObject'
+
+  
+
 
 paths:
   /things:
     get:
-      summary: Returns a list of thngs on this server.
+      summary: Collection of web things exposed by server.
       description: Returns a list of thngs on this server.
       responses:
         '200':
@@ -193,14 +218,14 @@ paths:
             items:
               $ref: '#/definitions/ThingDescription'
 
-  /things/{deviceId}:
+  /things/{deviceName}:
     get:
       summary: Returns a description for device.
       description: >
         Returns a description for device identified by `id`.
       parameters:
         - in: path
-          name: deviceId          
+          name: deviceName          
           type: string
           required: true
           description: Id of device
@@ -210,12 +235,12 @@ paths:
           schema:
             $ref: '#/definitions/ThingDescription'
 
-  /things/{deviceId}/properties:
+  /things/{deviceName}/properties:
     get:
       summary: Returns a list of properties for device.
       parameters:
         - in: path
-          name: deviceId
+          name: deviceName
           type: string
           required: true
           description: Id of device
@@ -225,10 +250,10 @@ paths:
           schema:
             $ref: '#/definitions/PropertyGetResponse'
 
-  /things/{deviceId}/properties/{propertyName}:
+  /things/{deviceName}/properties/{propertyName}:
     parameters:
       - in: path
-        name: deviceId
+        name: deviceName
         type: string
         required: true
         description: Id of device
@@ -261,10 +286,10 @@ paths:
             $ref: '#/definitions/PropertyGetResponse'
 
 
-  /things/{deviceId}/actions:
+  /things/{deviceName}/actions:
     parameters:
       - in: path
-        name: deviceId
+        name: deviceName
         type: string
         required: true
         description: Id of device
@@ -294,10 +319,10 @@ paths:
           schema:
             $ref: '#/definitions/ActionObject'
 
-  /things/{deviceId}/actions/{actionName}/{actionId}:
+  /things/{deviceName}/actions/{actionName}/{actionId}:
     parameters:
       - in: path
-        name: deviceId
+        name: deviceName
         type: string
         required: true
         description: Id of device
@@ -342,6 +367,44 @@ paths:
       responses:
         '204':
           description: No Content
+
+
+  /things/{deviceName}/events:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+
+    get:
+      summary: Get list of events
+      responses:
+        '200':
+          description: List of EventObject
+          schema:
+            $ref: '#/definitions/EventsResponse'
+
+  /things/{deviceName}/events/{eventType}:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+      - in: path
+        name: eventType
+        type: string
+        required: true
+        description: Type of event
+    get:
+      summary: Get list of events for particular event type
+      responses:
+        '200':
+          description: List of EventObject
+          schema:
+            $ref: '#/definitions/EventsResponse'
+      
             
                   
 

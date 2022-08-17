@@ -28,34 +28,40 @@ import (
 // Routes defines all the routes of the Server service.
 type Routes struct {
 	*gin.Engine
-	DeleteThingsDeviceIDActionsActionNameActionID struct {
+	DeleteThingsDeviceNameActionsActionNameActionID struct {
 		*gin.RouterGroup
 	}
 	GetThings struct {
 		*gin.RouterGroup
 	}
-	GetThingsDeviceID struct {
+	GetThingsDeviceName struct {
 		*gin.RouterGroup
 	}
-	GetThingsDeviceIDActions struct {
+	GetThingsDeviceNameActions struct {
 		*gin.RouterGroup
 	}
-	GetThingsDeviceIDActionsActionNameActionID struct {
+	GetThingsDeviceNameActionsActionNameActionID struct {
 		*gin.RouterGroup
 	}
-	GetThingsDeviceIDProperties struct {
+	GetThingsDeviceNameEvents struct {
 		*gin.RouterGroup
 	}
-	GetThingsDeviceIDPropertiesPropertyName struct {
+	GetThingsDeviceNameEventsEventType struct {
 		*gin.RouterGroup
 	}
-	PostThingsDeviceIDActions struct {
+	GetThingsDeviceNameProperties struct {
 		*gin.RouterGroup
 	}
-	PutThingsDeviceIDActionsActionNameActionID struct {
+	GetThingsDeviceNamePropertiesPropertyName struct {
 		*gin.RouterGroup
 	}
-	PutThingsDeviceIDPropertiesPropertyName struct {
+	PostThingsDeviceNameActions struct {
+		*gin.RouterGroup
+	}
+	PutThingsDeviceNameActionsActionNameActionID struct {
+		*gin.RouterGroup
+	}
+	PutThingsDeviceNamePropertiesPropertyName struct {
 		*gin.RouterGroup
 	}
 }
@@ -106,16 +112,18 @@ func healthHandler(healthFunc func() bool) gin.HandlerFunc {
 // business logic for the Server service.
 type Service interface {
 	Healthy() bool
-	DeleteThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.DeleteThingsDeviceIDActionsActionNameActionIDParams) *api.Response
+	DeleteThingsDeviceNameActionsActionNameActionID(ctx *gin.Context, params *operations.DeleteThingsDeviceNameActionsActionNameActionIDParams) *api.Response
 	GetThings(ctx *gin.Context) *api.Response
-	GetThingsDeviceID(ctx *gin.Context, params *operations.GetThingsDeviceIDParams) *api.Response
-	GetThingsDeviceIDActions(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsParams) *api.Response
-	GetThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsActionNameActionIDParams) *api.Response
-	GetThingsDeviceIDProperties(ctx *gin.Context, params *operations.GetThingsDeviceIDPropertiesParams) *api.Response
-	GetThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.GetThingsDeviceIDPropertiesPropertyNameParams) *api.Response
-	PostThingsDeviceIDActions(ctx *gin.Context, params *operations.PostThingsDeviceIDActionsParams) *api.Response
-	PutThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.PutThingsDeviceIDActionsActionNameActionIDParams) *api.Response
-	PutThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.PutThingsDeviceIDPropertiesPropertyNameParams) *api.Response
+	GetThingsDeviceName(ctx *gin.Context, params *operations.GetThingsDeviceNameParams) *api.Response
+	GetThingsDeviceNameActions(ctx *gin.Context, params *operations.GetThingsDeviceNameActionsParams) *api.Response
+	GetThingsDeviceNameActionsActionNameActionID(ctx *gin.Context, params *operations.GetThingsDeviceNameActionsActionNameActionIDParams) *api.Response
+	GetThingsDeviceNameEvents(ctx *gin.Context, params *operations.GetThingsDeviceNameEventsParams) *api.Response
+	GetThingsDeviceNameEventsEventType(ctx *gin.Context, params *operations.GetThingsDeviceNameEventsEventTypeParams) *api.Response
+	GetThingsDeviceNameProperties(ctx *gin.Context, params *operations.GetThingsDeviceNamePropertiesParams) *api.Response
+	GetThingsDeviceNamePropertiesPropertyName(ctx *gin.Context, params *operations.GetThingsDeviceNamePropertiesPropertyNameParams) *api.Response
+	PostThingsDeviceNameActions(ctx *gin.Context, params *operations.PostThingsDeviceNameActionsParams) *api.Response
+	PutThingsDeviceNameActionsActionNameActionID(ctx *gin.Context, params *operations.PutThingsDeviceNameActionsActionNameActionIDParams) *api.Response
+	PutThingsDeviceNamePropertiesPropertyName(ctx *gin.Context, params *operations.PutThingsDeviceNamePropertiesPropertyNameParams) *api.Response
 }
 
 func ginizePath(path string) string {
@@ -128,10 +136,10 @@ func initializeRoutes(enableAuth bool, tokenURL string, tracer opentracing.Trace
 	engine.Use(gin.Recovery())
 	routes := &Routes{Engine: engine}
 
-	routes.DeleteThingsDeviceIDActionsActionNameActionID.RouterGroup = routes.Group("/v1")
-	routes.DeleteThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	routes.DeleteThingsDeviceNameActionsActionNameActionID.RouterGroup = routes.Group("/v1")
+	routes.DeleteThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.DeleteThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "delete_things_device_id_actions_action_name_action_id"))
+		routes.DeleteThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "delete_things_device_name_actions_action_name_action_id"))
 	}
 
 	routes.GetThings.RouterGroup = routes.Group("/v1")
@@ -140,56 +148,68 @@ func initializeRoutes(enableAuth bool, tokenURL string, tracer opentracing.Trace
 		routes.GetThings.RouterGroup.Use(tracing.InitSpan(tracer, "get_things"))
 	}
 
-	routes.GetThingsDeviceID.RouterGroup = routes.Group("/v1")
-	routes.GetThingsDeviceID.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceName.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceName.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.GetThingsDeviceID.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id"))
+		routes.GetThingsDeviceName.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name"))
 	}
 
-	routes.GetThingsDeviceIDActions.RouterGroup = routes.Group("/v1")
-	routes.GetThingsDeviceIDActions.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceNameActions.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceNameActions.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.GetThingsDeviceIDActions.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id_actions"))
+		routes.GetThingsDeviceNameActions.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name_actions"))
 	}
 
-	routes.GetThingsDeviceIDActionsActionNameActionID.RouterGroup = routes.Group("/v1")
-	routes.GetThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceNameActionsActionNameActionID.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.GetThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id_actions_action_name_action_id"))
+		routes.GetThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name_actions_action_name_action_id"))
 	}
 
-	routes.GetThingsDeviceIDProperties.RouterGroup = routes.Group("/v1")
-	routes.GetThingsDeviceIDProperties.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceNameEvents.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceNameEvents.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.GetThingsDeviceIDProperties.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id_properties"))
+		routes.GetThingsDeviceNameEvents.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name_events"))
 	}
 
-	routes.GetThingsDeviceIDPropertiesPropertyName.RouterGroup = routes.Group("/v1")
-	routes.GetThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceNameEventsEventType.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceNameEventsEventType.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.GetThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_id_properties_property_name"))
+		routes.GetThingsDeviceNameEventsEventType.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name_events_event_type"))
 	}
 
-	routes.PostThingsDeviceIDActions.RouterGroup = routes.Group("/v1")
-	routes.PostThingsDeviceIDActions.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceNameProperties.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceNameProperties.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.PostThingsDeviceIDActions.RouterGroup.Use(tracing.InitSpan(tracer, "post_things_device_id_actions"))
+		routes.GetThingsDeviceNameProperties.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name_properties"))
 	}
-	routes.PostThingsDeviceIDActions.RouterGroup.Use(middleware.ContentTypes("application/json"))
 
-	routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup = routes.Group("/v1")
-	routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	routes.GetThingsDeviceNamePropertiesPropertyName.RouterGroup = routes.Group("/v1")
+	routes.GetThingsDeviceNamePropertiesPropertyName.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "put_things_device_id_actions_action_name_action_id"))
+		routes.GetThingsDeviceNamePropertiesPropertyName.RouterGroup.Use(tracing.InitSpan(tracer, "get_things_device_name_properties_property_name"))
 	}
-	routes.PutThingsDeviceIDActionsActionNameActionID.RouterGroup.Use(middleware.ContentTypes("application/json"))
 
-	routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup = routes.Group("/v1")
-	routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(middleware.LogrusLogger())
+	routes.PostThingsDeviceNameActions.RouterGroup = routes.Group("/v1")
+	routes.PostThingsDeviceNameActions.RouterGroup.Use(middleware.LogrusLogger())
 	if tracer != nil {
-		routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(tracing.InitSpan(tracer, "put_things_device_id_properties_property_name"))
+		routes.PostThingsDeviceNameActions.RouterGroup.Use(tracing.InitSpan(tracer, "post_things_device_name_actions"))
 	}
-	routes.PutThingsDeviceIDPropertiesPropertyName.RouterGroup.Use(middleware.ContentTypes("application/json"))
+	routes.PostThingsDeviceNameActions.RouterGroup.Use(middleware.ContentTypes("application/json"))
+
+	routes.PutThingsDeviceNameActionsActionNameActionID.RouterGroup = routes.Group("/v1")
+	routes.PutThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(middleware.LogrusLogger())
+	if tracer != nil {
+		routes.PutThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(tracing.InitSpan(tracer, "put_things_device_name_actions_action_name_action_id"))
+	}
+	routes.PutThingsDeviceNameActionsActionNameActionID.RouterGroup.Use(middleware.ContentTypes("application/json"))
+
+	routes.PutThingsDeviceNamePropertiesPropertyName.RouterGroup = routes.Group("/v1")
+	routes.PutThingsDeviceNamePropertiesPropertyName.RouterGroup.Use(middleware.LogrusLogger())
+	if tracer != nil {
+		routes.PutThingsDeviceNamePropertiesPropertyName.RouterGroup.Use(tracing.InitSpan(tracer, "put_things_device_name_properties_property_name"))
+	}
+	routes.PutThingsDeviceNamePropertiesPropertyName.RouterGroup.Use(middleware.ContentTypes("application/json"))
 
 	return routes
 }
@@ -271,16 +291,18 @@ func (s *Server) configureRoutes() {
 
 	// setup all service routes after the authenticate middleware has been
 	// initialized.
-	s.Routes.DeleteThingsDeviceIDActionsActionNameActionID.DELETE(ginizePath("/things/{deviceId}/actions/{actionName}/{actionId}"), operations.DeleteThingsDeviceIDActionsActionNameActionIDEndpoint(s.service.DeleteThingsDeviceIDActionsActionNameActionID))
+	s.Routes.DeleteThingsDeviceNameActionsActionNameActionID.DELETE(ginizePath("/things/{deviceName}/actions/{actionName}/{actionId}"), operations.DeleteThingsDeviceNameActionsActionNameActionIDEndpoint(s.service.DeleteThingsDeviceNameActionsActionNameActionID))
 	s.Routes.GetThings.GET(ginizePath("/things"), operations.GetThingsEndpoint(s.service.GetThings))
-	s.Routes.GetThingsDeviceID.GET(ginizePath("/things/{deviceId}"), operations.GetThingsDeviceIDEndpoint(s.service.GetThingsDeviceID))
-	s.Routes.GetThingsDeviceIDActions.GET(ginizePath("/things/{deviceId}/actions"), operations.GetThingsDeviceIDActionsEndpoint(s.service.GetThingsDeviceIDActions))
-	s.Routes.GetThingsDeviceIDActionsActionNameActionID.GET(ginizePath("/things/{deviceId}/actions/{actionName}/{actionId}"), operations.GetThingsDeviceIDActionsActionNameActionIDEndpoint(s.service.GetThingsDeviceIDActionsActionNameActionID))
-	s.Routes.GetThingsDeviceIDProperties.GET(ginizePath("/things/{deviceId}/properties"), operations.GetThingsDeviceIDPropertiesEndpoint(s.service.GetThingsDeviceIDProperties))
-	s.Routes.GetThingsDeviceIDPropertiesPropertyName.GET(ginizePath("/things/{deviceId}/properties/{propertyName}"), operations.GetThingsDeviceIDPropertiesPropertyNameEndpoint(s.service.GetThingsDeviceIDPropertiesPropertyName))
-	s.Routes.PostThingsDeviceIDActions.POST(ginizePath("/things/{deviceId}/actions"), operations.PostThingsDeviceIDActionsEndpoint(s.service.PostThingsDeviceIDActions))
-	s.Routes.PutThingsDeviceIDActionsActionNameActionID.PUT(ginizePath("/things/{deviceId}/actions/{actionName}/{actionId}"), operations.PutThingsDeviceIDActionsActionNameActionIDEndpoint(s.service.PutThingsDeviceIDActionsActionNameActionID))
-	s.Routes.PutThingsDeviceIDPropertiesPropertyName.PUT(ginizePath("/things/{deviceId}/properties/{propertyName}"), operations.PutThingsDeviceIDPropertiesPropertyNameEndpoint(s.service.PutThingsDeviceIDPropertiesPropertyName))
+	s.Routes.GetThingsDeviceName.GET(ginizePath("/things/{deviceName}"), operations.GetThingsDeviceNameEndpoint(s.service.GetThingsDeviceName))
+	s.Routes.GetThingsDeviceNameActions.GET(ginizePath("/things/{deviceName}/actions"), operations.GetThingsDeviceNameActionsEndpoint(s.service.GetThingsDeviceNameActions))
+	s.Routes.GetThingsDeviceNameActionsActionNameActionID.GET(ginizePath("/things/{deviceName}/actions/{actionName}/{actionId}"), operations.GetThingsDeviceNameActionsActionNameActionIDEndpoint(s.service.GetThingsDeviceNameActionsActionNameActionID))
+	s.Routes.GetThingsDeviceNameEvents.GET(ginizePath("/things/{deviceName}/events"), operations.GetThingsDeviceNameEventsEndpoint(s.service.GetThingsDeviceNameEvents))
+	s.Routes.GetThingsDeviceNameEventsEventType.GET(ginizePath("/things/{deviceName}/events/{eventType}"), operations.GetThingsDeviceNameEventsEventTypeEndpoint(s.service.GetThingsDeviceNameEventsEventType))
+	s.Routes.GetThingsDeviceNameProperties.GET(ginizePath("/things/{deviceName}/properties"), operations.GetThingsDeviceNamePropertiesEndpoint(s.service.GetThingsDeviceNameProperties))
+	s.Routes.GetThingsDeviceNamePropertiesPropertyName.GET(ginizePath("/things/{deviceName}/properties/{propertyName}"), operations.GetThingsDeviceNamePropertiesPropertyNameEndpoint(s.service.GetThingsDeviceNamePropertiesPropertyName))
+	s.Routes.PostThingsDeviceNameActions.POST(ginizePath("/things/{deviceName}/actions"), operations.PostThingsDeviceNameActionsEndpoint(s.service.PostThingsDeviceNameActions))
+	s.Routes.PutThingsDeviceNameActionsActionNameActionID.PUT(ginizePath("/things/{deviceName}/actions/{actionName}/{actionId}"), operations.PutThingsDeviceNameActionsActionNameActionIDEndpoint(s.service.PutThingsDeviceNameActionsActionNameActionID))
+	s.Routes.PutThingsDeviceNamePropertiesPropertyName.PUT(ginizePath("/things/{deviceName}/properties/{propertyName}"), operations.PutThingsDeviceNamePropertiesPropertyNameEndpoint(s.service.PutThingsDeviceNamePropertiesPropertyName))
 }
 
 // Run runs the Server. It will listen on either HTTP or HTTPS depending on the

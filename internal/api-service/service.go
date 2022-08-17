@@ -16,38 +16,46 @@ func (s *WebThingsApiService) GetThings(ctx *gin.Context) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) GetThingsDeviceID(ctx *gin.Context, params *operations.GetThingsDeviceIDParams) *api.Response {
+func (s *WebThingsApiService) GetThingsDeviceName(ctx *gin.Context, params *operations.GetThingsDeviceNameParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) GetThingsDeviceIDActions(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsParams) *api.Response {
+func (s *WebThingsApiService) GetThingsDeviceNameActions(ctx *gin.Context, params *operations.GetThingsDeviceNameActionsParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) GetThingsDeviceIDProperties(ctx *gin.Context, params *operations.GetThingsDeviceIDPropertiesParams) *api.Response {
+func (s *WebThingsApiService) GetThingsDeviceNameProperties(ctx *gin.Context, params *operations.GetThingsDeviceNamePropertiesParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) GetThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.GetThingsDeviceIDPropertiesPropertyNameParams) *api.Response {
+func (s *WebThingsApiService) GetThingsDeviceNamePropertiesPropertyName(ctx *gin.Context, params *operations.GetThingsDeviceNamePropertiesPropertyNameParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) PostThingsDeviceIDActions(ctx *gin.Context, params *operations.PostThingsDeviceIDActionsParams) *api.Response {
+func (s *WebThingsApiService) PostThingsDeviceNameActions(ctx *gin.Context, params *operations.PostThingsDeviceNameActionsParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) PutThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.PutThingsDeviceIDActionsActionNameActionIDParams) *api.Response {
+func (s *WebThingsApiService) PutThingsDeviceNameActionsActionNameActionID(ctx *gin.Context, params *operations.PutThingsDeviceNameActionsActionNameActionIDParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) DeleteThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.DeleteThingsDeviceIDActionsActionNameActionIDParams) *api.Response {
+func (s *WebThingsApiService) DeleteThingsDeviceNameActionsActionNameActionID(ctx *gin.Context, params *operations.DeleteThingsDeviceNameActionsActionNameActionIDParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) GetThingsDeviceIDActionsActionNameActionID(ctx *gin.Context, params *operations.GetThingsDeviceIDActionsActionNameActionIDParams) *api.Response {
+func (s *WebThingsApiService) GetThingsDeviceNameActionsActionNameActionID(ctx *gin.Context, params *operations.GetThingsDeviceNameActionsActionNameActionIDParams) *api.Response {
 	panic("not implemented")
 }
 
-func (s *WebThingsApiService) PutThingsDeviceIDPropertiesPropertyName(ctx *gin.Context, params *operations.PutThingsDeviceIDPropertiesPropertyNameParams) *api.Response {
+func (s *WebThingsApiService) PutThingsDeviceNamePropertiesPropertyName(ctx *gin.Context, params *operations.PutThingsDeviceNamePropertiesPropertyNameParams) *api.Response {
+	panic("not implemented")
+}
+
+func (s *WebThingsApiService) GetThingsDeviceNameEvents(ctx *gin.Context, params *operations.GetThingsDeviceNameEventsParams) *api.Response {
+	panic("not implemented")
+}
+
+func (s *WebThingsApiService) GetThingsDeviceNameEventsEventType(ctx *gin.Context, params *operations.GetThingsDeviceNameEventsEventTypeParams) *api.Response {
 	panic("not implemented")
 }
