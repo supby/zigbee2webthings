@@ -1,0 +1,14 @@
+[Unit]
+Description=zigbee2webthings
+After=network.target
+
+[Service]
+ExecStart=/opt/zigbee2webthings/zigbee2webthings
+WorkingDirectory=/opt/zigbee2webthings
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

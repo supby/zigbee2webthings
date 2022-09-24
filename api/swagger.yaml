@@ -1,0 +1,416 @@
+swagger: '2.0'
+info:
+  title: Web Thing REST API
+  description: The Web Thing API provides a web services based programming interface with a RESTful design for applications to access the properties of devices, request the execution of actions and access a list of events representing a change in state.
+  version: 0.1.0
+
+host: api.example.com
+basePath: /v1
+schemes:
+  - https
+  - http
+
+
+definitions:    
+  PropertyDescription:
+    type: object
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      type:
+        type: string
+      '@type':
+        type: string
+      minimum:
+        type: integer
+      maximum:
+        type: integer
+      unit:
+        type: string
+      multipleOf:
+        type: integer
+      enum:
+        type: array
+        items:
+          type: string
+      readOnly:
+        type: boolean
+      links:
+        type: array
+        items:
+          $ref: '#/definitions/LinkDescription'
+
+  ActionDescription:
+    type: object
+    properties:
+      title:
+        type: integer
+      description:
+        type: string
+      '@type':
+        type: string
+      links:
+        type: array
+        items:
+          $ref: '#/definitions/LinkDescription'
+      input:
+        type: object
+        properties:
+          '@type':
+            type: string
+          type:
+            type: string
+          minimum:
+            type: integer
+          maximum:
+            type: integer
+          unit:
+            type: string
+          multipleOf:
+            type: integer
+
+  EventDescription:
+    type: object
+    properties:
+      title:
+        type: integer
+      description:
+        type: string
+      type:
+        type: string
+      '@type':
+        type: string
+      minimum:
+        type: integer
+      maximum:
+        type: integer
+      unit:
+        type: string
+      multipleOf:
+        type: integer
+      links:
+        type: array
+        items:
+          $ref: '#/definitions/LinkDescription'
+
+  LinkDescription:
+    type: object
+    properties:
+      href:
+        type: string
+      rel:
+        type: string
+      mediaType:
+        type: string
+
+  ThingDescription:
+    type: object
+    properties:
+      id:
+        type: string
+      '@type':
+        type: string
+      '@context':
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+      properties:
+        type: array
+        items:          
+          $ref: '#/definitions/PropertyDescription'
+      actions:
+        type: array
+        items:          
+          $ref: '#/definitions/ActionDescription'
+
+      events:
+        type: array
+        items:          
+          $ref: '#/definitions/EventDescription'
+      links:
+        type: array
+        items:          
+          $ref: '#/definitions/LinkDescription'
+
+  ActionPostBody:
+    type: object
+    additionalProperties:
+      type: object
+      description: Name of action to execute
+      properties:
+        input:
+          type: object
+          additionalProperties:
+            type: 
+              - string
+              - integer
+
+  ActionObject:
+    type: object
+    additionalProperties:
+      type: object
+      properties:
+        input:
+          type: object
+          additionalProperties:
+            type: 
+            - string
+            - integer
+        id:
+          type: string
+        href:
+          type: string
+        timeRequested:
+          type: string
+        status:
+          type: string
+
+  ActionsGetResponse:
+    type: array
+    items:
+      $ref: '#/definitions/ActionObject'
+
+  PropertyGetResponse:
+    type: object
+    additionalProperties:
+      type: 
+        - string
+        - number
+
+  PropertyPutBody:
+    type: object
+    additionalProperties:
+      type: 
+        - string
+        - number
+
+  EventObject:
+    type: object
+    additionalProperties:
+      type: object
+      additionalProperties:
+        type: 
+          - string
+          - number
+
+  EventsResponse:
+    type: array
+    items:
+      $ref: '#/definitions/EventObject'
+
+  
+
+
+paths:
+  /things:
+    get:
+      summary: Collection of web things exposed by server.
+      description: Returns a list of thngs on this server.
+      responses:
+        '200':
+          description: A JSON array of thing objects          
+          schema: 
+            type: array
+            items:
+              $ref: '#/definitions/ThingDescription'
+
+  /things/{deviceName}:
+    get:
+      summary: Returns a description for device.
+      description: >
+        Returns a description for device identified by `id`.
+      parameters:
+        - in: path
+          name: deviceName          
+          type: string
+          required: true
+          description: Id of device
+      responses:
+        '200':
+          description: A thing object          
+          schema:
+            $ref: '#/definitions/ThingDescription'
+
+  /things/{deviceName}/properties:
+    get:
+      summary: Returns a list of properties for device.
+      parameters:
+        - in: path
+          name: deviceName
+          type: string
+          required: true
+          description: Id of device
+      responses:
+        '200':
+          description: A properties object
+          schema:
+            $ref: '#/definitions/PropertyGetResponse'
+
+  /things/{deviceName}/properties/{propertyName}:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+      - in: path
+        name: propertyName
+        type: string
+        required: true
+        description: Name of property
+    get:
+      summary: Returns a property of device.      
+      responses:
+        '200':
+          description: A property value
+          schema:
+            $ref: '#/definitions/PropertyGetResponse'
+
+    put:
+      summary: Set a property of device.
+      parameters:
+        - in: body
+          name: property
+          description: Set property.
+          required: true
+          schema:
+            $ref: '#/definitions/PropertyPutBody'
+      responses:
+        '200':
+          description: A property value
+          schema:
+            $ref: '#/definitions/PropertyGetResponse'
+
+
+  /things/{deviceName}/actions:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+
+    get:
+      summary: Actions Get or Create      
+      responses:
+        '200':
+          description: >
+            A queue of actions to be executed on a device.
+          schema:
+            $ref: '#/definitions/ActionsGetResponse'
+
+    post:
+      parameters:
+        - in: body
+          name: action
+          description: Action to execute.
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPostBody'
+            
+      responses:
+        '201':
+          description: >
+            Created action to be executed on a device.
+          schema:
+            $ref: '#/definitions/ActionObject'
+
+  /things/{deviceName}/actions/{actionName}/{actionId}:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+      - in: path
+        name: actionName
+        type: string
+        required: true
+        description: Name of action
+      - in: path
+        name: actionId
+        type: string
+        required: true
+        description: Id of created action
+
+    get:
+      summary: Single Action Status Get
+      responses:
+        '200':
+          description: >
+            A queue of actions to be executed on a device.
+          schema:
+            $ref: '#/definitions/ActionObject'
+
+    put:
+      summary: Update Single Action
+      parameters:
+        - in: body
+          name: action
+          description: Action to execute.
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPostBody'
+      responses:
+        '200':
+          description: >
+            A queue of actions to be executed on a device.
+          schema:
+            $ref: '#/definitions/ActionObject'
+
+    delete:
+      summary: Cancel created action
+      responses:
+        '204':
+          description: No Content
+
+
+  /things/{deviceName}/events:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+
+    get:
+      summary: Get list of events
+      responses:
+        '200':
+          description: List of EventObject
+          schema:
+            $ref: '#/definitions/EventsResponse'
+
+  /things/{deviceName}/events/{eventType}:
+    parameters:
+      - in: path
+        name: deviceName
+        type: string
+        required: true
+        description: Id of device
+      - in: path
+        name: eventType
+        type: string
+        required: true
+        description: Type of event
+    get:
+      summary: Get list of events for particular event type
+      responses:
+        '200':
+          description: List of EventObject
+          schema:
+            $ref: '#/definitions/EventsResponse'
+      
+            
+                  
+
+
+                      
+
+
+                  
+                  
