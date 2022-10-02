@@ -13,6 +13,7 @@ type DeviceDB interface {
 	GetDevices(ctx context.Context) ([]Device, error)
 	SaveDevice(ctx context.Context, device Device) error
 	DeleteDevice(ctx context.Context, ieeeAddress uint64) error
+	Close(ctx context.Context) error
 }
 
 func NewDeviceDB(dirname string) (DeviceDB, error) {
@@ -32,6 +33,7 @@ type deviceDB struct {
 
 func (d *deviceDB) GetDevices(ctx context.Context) ([]Device, error) {
 	iter := d.db.NewIter(nil)
+	defer iter.Close()
 
 	var ret []Device
 	for iter.First(); iter.Valid(); iter.Next() {
@@ -75,6 +77,14 @@ func (d *deviceDB) DeleteDevice(ctx context.Context, ieeeAddress uint64) error {
 
 	err := d.db.Delete(key, &pebble.WriteOptions{})
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *deviceDB) Close(ctx context.Context) error {
+	if err := d.db.Close(); err != nil {
 		return err
 	}
 
