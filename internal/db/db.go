@@ -15,8 +15,8 @@ type DeviceDB interface {
 	DeleteDevice(ctx context.Context, ieeeAddress uint64) error
 }
 
-func NewDeviceDB(filename string) (DeviceDB, error) {
-	db, err := pebble.Open(filename, &pebble.Options{})
+func NewDeviceDB(dirname string) (DeviceDB, error) {
+	db, err := pebble.Open(dirname, &pebble.Options{})
 	if err != nil {
 		return nil, err
 	}
@@ -31,10 +31,10 @@ type deviceDB struct {
 }
 
 func (d *deviceDB) GetDevices(ctx context.Context) ([]Device, error) {
-	iter := d.db.NewIter(&pebble.IterOptions{})
+	iter := d.db.NewIter(nil)
 
 	var ret []Device
-	for iter.Next() {
+	for iter.First(); iter.Valid(); iter.Next() {
 		d := Device{
 			IEEEAddress: binary.LittleEndian.Uint64(iter.Key()),
 		}

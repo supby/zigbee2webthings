@@ -14,6 +14,7 @@ require (
 	github.com/cockroachdb/pebble v0.0.0-20220930163150-781ebeecebd2 // indirect
 	github.com/cockroachdb/redact v1.0.8 // indirect
 	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-contrib/pprof v1.4.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.8.1 // indirect
@@ -45,8 +46,10 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/zalando/gin-oauth2 v1.5.3 // indirect
 	go.mongodb.org/mongo-driver v1.10.0 // indirect
